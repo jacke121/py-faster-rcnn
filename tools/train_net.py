@@ -30,7 +30,7 @@ def parse_args():
                         default=0, type=int)
     parser.add_argument('--solver', dest='solver',
                         help='solver prototxt',
-                        default=None, type=str)
+                        default="../models/pascal_voc/VGG16/faster_rcnn_end2end/solver.prototxt", type=str)
     parser.add_argument('--iters', dest='max_iters',
                         help='number of iterations to train',
                         default=40000, type=int)
@@ -39,7 +39,7 @@ def parse_args():
                         default=None, type=str)
     parser.add_argument('--cfg', dest='cfg_file',
                         help='optional config file',
-                        default=None, type=str)
+                        default="../experiments/cfgs/faster_rcnn_end2end.yml", type=str)
     parser.add_argument('--imdb', dest='imdb_name',
                         help='dataset to train on',
                         default='voc_2007_trainval', type=str)
@@ -50,9 +50,9 @@ def parse_args():
                         help='set config keys', default=None,
                         nargs=argparse.REMAINDER)
 
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(1)
+    # if len(sys.argv) == 1:
+    #     parser.print_help()
+    #     sys.exit(1)
 
     args = parser.parse_args()
     return args
@@ -60,9 +60,9 @@ def parse_args():
 def combined_roidb(imdb_names):
     def get_roidb(imdb_name):
         imdb = get_imdb(imdb_name)
-        print 'Loaded dataset `{:s}` for training'.format(imdb.name)
+        print('Loaded dataset `{:s}` for training'.format(imdb.name))
         imdb.set_proposal_method(cfg.TRAIN.PROPOSAL_METHOD)
-        print 'Set proposal method: {:s}'.format(cfg.TRAIN.PROPOSAL_METHOD)
+        print('Set proposal method: {:s}'.format(cfg.TRAIN.PROPOSAL_METHOD))
         roidb = get_training_roidb(imdb)
         return roidb
 
@@ -102,10 +102,10 @@ if __name__ == '__main__':
     caffe.set_device(args.gpu_id)
 
     imdb, roidb = combined_roidb(args.imdb_name)
-    print '{:d} roidb entries'.format(len(roidb))
+    print('{:d} roidb entries'.format(len(roidb)))
 
     output_dir = get_output_dir(imdb)
-    print 'Output will be saved to `{:s}`'.format(output_dir)
+    print('Output will be saved to `{:s}`'.format(output_dir))
 
     train_net(args.solver, roidb, output_dir,
               pretrained_model=args.pretrained_model,
